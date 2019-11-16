@@ -35,8 +35,7 @@ boot_bias_P = bootP - P; boot_bias_P
 boot_var_P = 1/(B-1)*sum((bootPvector - bootP)^2); boot_var_P
 
 # Now let's correct the estimates with the bias
-bias_corrected_bootPvector = bootPvector - boot_bias_P; bias_corrected_bootPvector
-hist(bias_corrected_bootPvector)
+bias_corrected_P = P - boot_bias_P; bias_corrected_P
 
 ####################################
 ############ Plots #################
