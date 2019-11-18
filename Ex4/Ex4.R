@@ -36,7 +36,7 @@ s.prime <- function(lambda){
 }
 
 par(mfrow=c(1,3))
-lambda <- seq(0.1,0.9,0.05)
+lambda <- seq(5,35,0.05)
 plot(lambda,lik(lambda),ylab="likelihood",
      xlab=expression(lambda),lwd=2,type="l")
 box(lwd=2)
@@ -48,7 +48,8 @@ plot(lambda,s(lambda),ylab="score",
      lwd=2,type="l")
 abline(h=0,lty=3); box(lwd=2)
 
-
+library(maxLik)
+maxLik(logLik=loglik,start=0.01)
 
 # (a) Use the observed data and the method of Newton-Raphson to approximate the ML 
 # estimate of ??. Justify your choice of the initial estimate and all the intermediate steps.
@@ -75,23 +76,32 @@ NR      <- function(lambda0,eps){
   result
 }
 
-t(NR(2,epsil))
+t(NR(0.5,epsil)) # TODO
 
 # (b) Consider the following reparametrization b = log(??) in the pdf above. Implement the 
 # Newton-Rapshon algorithm to approximate the ML estimate of ?? using this reparametrization
 
+# loglikelihood function
+loglik.b <- function(b){
+  n*b-exp(b)*sum(x)
+}
+
+x<-seq(-10,10,0.1)
+plot(x, loglik.b(x))
+
 # score function
-s <- function(b){n-exp(b)*sum(x)}
+s.b <- function(b){n-exp(b)*sum(x)}
 
 # derivative of the (pro???le) score function 
-s.prime <- function(b){-exp(b)*sum(x)}
+s.b.prime <- function(b){-exp(b)*sum(x)}
 
+maxLik(logLik=loglik.b,start=2)
 
-NR <- function(x,lambda0,eps){ 
+NR <- function(lambda0,eps){ 
   # x : observed sample 
   # lambda0 : initial estimate of lambda
   # eps : is the stopping rule
-  n = length(x); b0 = log(lambda0)
+  b0 = log(lambda0)
   b.it = vector(); b.it[1] = b0
   lambda.it = vector(); lambda.it[1] = lambda0 
   k = 1; diff = 1 
@@ -106,6 +116,6 @@ NR <- function(x,lambda0,eps){
   result
 }
 
-
+t(NR(20,epsil))
 
 # (c) Which approach, (a) or (b) is more sensitive to the initial values?

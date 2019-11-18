@@ -13,29 +13,26 @@ n <- length(x)
 
 # likelihood and log-likelihood
 lik    <- function(alpha){
-  ((gamma(alpha+1)/(gamma(alpha)*gamma(1)))^n)*prod(x^(alpha-1))
+  alpha^n*prod((x^(alpha-1)))
+  #((gamma(alpha+1)^n)/(gamma(alpha)^n))*prod(x^(alpha-1))
 }
 
 loglik <- function(alpha){
-  n*log(alpha) + sum(log(x^(alpha-1)))
+  n*log(alpha) + (alpha-1)*sum(log(x))
 } 
 
 s <- function(alpha){
   n/alpha + sum(log(x))
 }
 
-# pesquisa de grelha pela estimativa dos momentos
-mean(x)
-# 0.676118
 
-alpha <- seq(1.5,3,0.1)
-k = 1
-for(i in alpha){
-  print(c(k,alpha[k], gamma(alpha[k]+1)/(gamma(alpha[k])*gamma(1)*(alpha[k]+1))))
-  k= k+1
-}
-# observamos que o valor mais proximo de 0.676118 e dado por alpha=2.1
-mme=2.1
+#---- plot of Beta function
+alpha <- seq(.1,3,0.05)
+plot(alpha, beta(alpha, 1))
+plot(alpha, lik(alpha))
+
+#---------------
+
 
 # (b) Display the likelihood, log-likelihood and score functions graphically
 # in order to locate the ML estimate of ??.
@@ -43,15 +40,15 @@ mme=2.1
 library(Cairo)
 CairoPDF("lik_loglik_score.pdf",width=9,height=3)
 par(mfrow=c(1,3))
-alpha <- seq(1.5,3,0.1)
+alpha <- seq(1.5,2.9,0.1)
 plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l")
 box(lwd=2)
 plot(alpha,loglik(alpha),ylab="log-likelihood",xlab=expression(alpha),lwd=2,type="l")
 box(lwd=2)
 plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l")
-abline(h=0,lty=3)
+abline(h=0,v=2.235083,lty=3)
 box(lwd=2)
-
+dev.off()
 
 #(c) Use the R function maxLik() from library maxLik to approximate the ML estimate of ??.
 library(maxLik)
@@ -138,11 +135,32 @@ NR      <- function(alpha0,eps){
   result
 }
 
+
+# pesquisa de grelha pela estimativa dos momentos
+mean(x)
+# 0.676118
+
+alpha <- seq(1.5,2.9,0.1)
+k = 1
+for(i in alpha){
+  print(c(k,alpha[k], gamma(alpha[k]+1)/(gamma(alpha[k])*(alpha[k]+1))))
+  k= k+1
+}
+# observamos que o valor mais proximo de 0.676118 e dado por alpha=2.1
+mme.mean=2.1
+
+mme.exp = mean(x)/(1-mean(x))
+
 t(NR(0.6,epsil))
 
-t(NR(mme,epsil))
+t(NR(mme.mean,epsil))
 #            1        2        3        4        5
 # iterates 2.1 2.226919 2.235053 2.235083 2.235083
+
+t(NR(mme.exp,epsil))
+#                 1        2       3        4        5
+# iterates 2.087544 2.225344 2.23504 2.235083 2.235083
+
 
 
 # FISHER SCORING
@@ -170,6 +188,6 @@ SF      <- function(alpha0,eps){
 }
 
 t(SF(0.6,epsil))
-t(SF(mme,0.000001))
+t(SF(mme.exp,0.000001))
 #            1        2        3        4        5
-# iterates 2.1 2.226919 2.235053 2.235083 2.235083
+# iterates 2.087544 2.225344 2.23504 2.235083 2.235083
