@@ -15,6 +15,7 @@ x <- c(-1.16225338, -0.01236762, 0.23144468, -2.08263805, 2.64870304, -0.5286893
 n <- length(x)
 epsil = 0.000001 # relative convergence criterion as a stop rule 
 
+
 # Likelihood function
 lik <- function(lambda){
   lambda^n * exp(-lambda * sum(x))

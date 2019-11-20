@@ -7,41 +7,34 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 
 x <- c(0.5409477, 0.8184872, 0.7848854, 0.9850439, 0.8963032, 0.6089008, 0.9549606,
-       0.6795304, 0.8451902, 0.5613979, 0.4029634, 0.2741569, 0.3996693, 0.6371445, 0.7521881)
+       0.6795304, 0.8451902, 0.5613979, 0.4029634, 0.2741569, 0.3996693, 0.6371445, 
+       0.7521881)
 n <- length(x)
 
 
 # likelihood and log-likelihood
 lik    <- function(alpha){
-  alpha^n*prod((x^(alpha-1)))
-  #((gamma(alpha+1)^n)/(gamma(alpha)^n))*prod(x^(alpha-1))
+  alpha^n*prod(x)^(alpha-1)
 }
 
 loglik <- function(alpha){
   n*log(alpha) + (alpha-1)*sum(log(x))
 } 
 
+# score function
 s <- function(alpha){
   n/alpha + sum(log(x))
 }
 
 
-#---- plot of Beta function
-alpha <- seq(.1,3,0.05)
-plot(alpha, beta(alpha, 1))
-plot(alpha, lik(alpha))
-
-#---------------
-
-
 # (b) Display the likelihood, log-likelihood and score functions graphically
 # in order to locate the ML estimate of ??.
-
 library(Cairo)
 CairoPDF("lik_loglik_score.pdf",width=9,height=3)
 par(mfrow=c(1,3))
 alpha <- seq(1.5,2.9,0.1)
 plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l")
+abline(v=2.235083,lty=3)
 box(lwd=2)
 plot(alpha,loglik(alpha),ylab="log-likelihood",xlab=expression(alpha),lwd=2,type="l")
 box(lwd=2)
