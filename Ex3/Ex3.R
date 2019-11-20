@@ -31,21 +31,26 @@ s <- function(alpha){
 # in order to locate the ML estimate of ??.
 library(Cairo)
 CairoPDF("lik_loglik_score.pdf",width=9,height=3)
-par(mfrow=c(1,3))
+par(mfrow=c(1,3), oma = c(2, 5, 2, 0), mar = c(3.1, 1.5, 2.1, 2.1))
 alpha <- seq(1.5,2.9,0.1)
-plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l")
-abline(v=2.235083,lty=3)
+plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l", 
+     main = "Likelihood")
 box(lwd=2)
-plot(alpha,loglik(alpha),ylab="log-likelihood",xlab=expression(alpha),lwd=2,type="l")
+plot(alpha,loglik(alpha),ylab="log-likelihood",xlab=expression(alpha),lwd=2,type="l", 
+     main = "Loglikelihood")
 box(lwd=2)
-plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l")
-abline(h=0,v=2.235083,lty=3)
+plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l", 
+     main = "Score")
+abline(h=0,lty=3)
 box(lwd=2)
 dev.off()
 
+# graphical maximum likelihood estimator
+mme.graphical = 2.2
+
 #(c) Use the R function maxLik() from library maxLik to approximate the ML estimate of ??.
 library(maxLik)
-maxLik(logLik=loglik, start=mme)
+maxLik(logLik=loglik, start=mme.graphical)
 #Maximum Likelihood estimation
 #Newton-Raphson maximisation, 3 iterations
 #Return code 1: gradient close to zero
@@ -91,11 +96,37 @@ bisection <- function(a,b,eps){
 }
 
 epsil = 0.000001
-t(bisection(2,2.5,epsil))
+a.init = 2
+b.init = 2.5
+
+# test whether we can use Bolzano's Theoreme
+bolz <- s(a.init)*s(b.init); bolz # -0.5609915 < 0
+
+t(bisection(a.init,b.init,epsil))
 #             1     2      3       4        5        6        7        8        9       10
 # iterates 2.25 2.125 2.1875 2.21875 2.234375 2.242188 2.238281 2.236328 2.235352 2.234863
 #               11       12       13       14       15       16       17       18       19
 # iterates 2.235107 2.234985 2.235046 2.235077 2.235092 2.235085 2.235081 2.235083 2.235084
+
+# start at 0 and b random
+s(0.01)*s(5) # -5541.834
+t(bisection(0.01,5,epsil))
+#             1    2     3      4       5        6        7        8        9       10       11
+#iterates 2.505 1.2575 1.88125 2.193125 2.349062 2.271094 2.232109 2.251602 2.241855 2.236982
+#             11       12       13      14       15       16       17       18       19
+#iterates 2.234546 2.235764 2.235155 2.23485 2.235003 2.235079 2.235117 2.235098 2.235088
+#             20       21       22       23
+#iterates 2.235084 2.235081 2.235082 2.235083
+
+
+# start close to maxlik value
+s(2.23508)*s(2.23509) # -1.858505e-10
+t(bisection(2.23508,2.23509,epsil))
+#                 1        2        3        4
+# iterates 2.235085 2.235082 2.235084 2.235083
+
+
+
 
 
 ##
