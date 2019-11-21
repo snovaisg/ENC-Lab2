@@ -96,6 +96,8 @@ bisection <- function(a,b,eps){
 }
 
 epsil = 0.000001
+
+# graphical choice
 a.init = 2
 b.init = 2.5
 
@@ -108,9 +110,10 @@ t(bisection(a.init,b.init,epsil))
 #               11       12       13       14       15       16       17       18       19
 # iterates 2.235107 2.234985 2.235046 2.235077 2.235092 2.235085 2.235081 2.235083 2.235084
 
-# start at 0 and b random
+
+# start at almost 0 and b random but bigger than our graphical estimation
 s(0.01)*s(5) # -5541.834
-t(bisection(0.01,5,epsil))
+t(bisection(0.000001,5,epsil))
 #             1    2     3      4       5        6        7        8        9       10       11
 #iterates 2.505 1.2575 1.88125 2.193125 2.349062 2.271094 2.232109 2.251602 2.241855 2.236982
 #             11       12       13      14       15       16       17       18       19
@@ -127,6 +130,27 @@ t(bisection(2.23508,2.23509,epsil))
 
 
 
+###### TODO
+rand.b <- runif(2,epsil,5)
+rand.b <- c(rand.b,100)
+rand.b
+tab <- vector()
+for (i in seq_along(rand.b)){
+  if (s(epsil)*s(i) <= 0){
+    tab <- c(tab, c(t(bisection(epsil,i,epsil))))
+  }
+}
+tab
+
+
+tab <- numeric(length(rand.b))
+df <- list()
+for (i in seq_along(tab)){
+  df[[i]] <- data.frame(
+    b <- i,
+    myT <- t(bisection(epsil,i,epsil)))
+    }  
+#############
 
 
 ##
@@ -143,7 +167,7 @@ NR      <- function(alpha0,eps){
   # eps    : is the stopping rule
   
   # the NR method iterates until the stopping criterion is validated
-  # we will use as stopping rule diff = |alpha_(t+1)-alpha_(t)| <= eps
+  # we will use as the absolute convergence rule diff = |alpha_(t+1)-alpha_(t)| <= eps
   alpha.it    = vector()
   alpha.it[1] = alpha0
   k           = 1
