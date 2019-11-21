@@ -6,11 +6,11 @@ library(rstudioapi) # to automatically set the working directory to this file's 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 # read in data
-x <- c(-1.16225338, -0.01236762, 0.23144468, -2.08263805, 2.64870304, -0.52868938,
-       -1.52280636, 0.03085357, -1.54249244, -0.23164183, 2.23750583, -0.64678326,
-       -0.82817693, -1.50508448, 0.87125402, -1.67430203, 1.63702338, -0.85729792,
-       -0.67855079, -1.36315013, -1.70412209, -0.05967576, -0.88579241, -0.33469221,
-       -0.74940615)
+x <- c(0.58169466, 0.39766226, 0.91658956, 0.02177749, 0.03876619, 0.21827670, 0.21670848,
+       0.10018400, 1.88016308, 0.02010583, 0.69298625, 0.33118257, 0.19380250, 0.26008126,
+       0.12985106, 0.58605940, 1.07807141, 0.33017960, 0.40754127, 2.78690463, 0.58148257,
+       0.66611808, 1.02432813, 0.92968585, 0.80588206)
+
 
 n <- length(x)
 epsil = 0.000001 # relative convergence criterion as a stop rule 
@@ -36,21 +36,34 @@ s.prime <- function(lambda){
   -n/lambda^2
 }
 
-par(mfrow=c(1,3))
-lambda <- seq(5,35,0.05)
-plot(lambda,lik(lambda),ylab="likelihood",
-     xlab=expression(lambda),lwd=2,type="l")
+
+# Plot of the Likelihood, loglikelihood and score function to look for an estimator
+library(Cairo)
+CairoPDF("lik_loglik_score_Exp.pdf",width=9,height=5)
+par(mfrow=c(1,3), oma = c(2, 5, 2, 0), mar = c(3.1, 1.5, 2.1, 2.1))
+lambda <- seq(0,3.5,0.05)
+plot(lambda,lik(lambda),ylab="likelihood",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Likelihood")
 box(lwd=2)
-plot(lambda,loglik(lambda),ylab="log-likelihood",
-     xlab=expression(lambda),lwd=2,type="l")
+plot(lambda,loglik(lambda),ylab="log-likelihood",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Loglikelihood")
 box(lwd=2)
-plot(lambda,s(lambda),ylab="score",
-     xlab=expression(lambda),
-     lwd=2,type="l")
-abline(h=0,lty=3); box(lwd=2)
+plot(lambda,s(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Score")
+abline(h=0,lty=3)
+box(lwd=2)
+# mtext(expression(paste("f(x;", lambda , ") =", lambda, "e^(",lambda,"x)")), outer = TRUE, cex = 1.5)
+dev.off()
 
 library(maxLik)
 maxLik(logLik=loglik,start=0.01)
+# Maximum Likelihood estimation
+# Newton-Raphson maximisation, 12 iterations
+# Return code 1: gradient close to zero
+# Log-Likelihood: -12.55405 (1 free parameter(s))
+# Estimate(s): 1.645161 
+
+
 
 # (a) Use the observed data and the method of Newton-Raphson to approximate the ML 
 # estimate of ??. Justify your choice of the initial estimate and all the intermediate steps.

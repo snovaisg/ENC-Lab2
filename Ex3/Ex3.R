@@ -30,7 +30,7 @@ s <- function(alpha){
 # (b) Display the likelihood, log-likelihood and score functions graphically
 # in order to locate the ML estimate of ??.
 library(Cairo)
-CairoPDF("lik_loglik_score.pdf",width=9,height=3)
+CairoPDF("lik_loglik_score_Beta.pdf",width=9,height=5)
 par(mfrow=c(1,3), oma = c(2, 5, 2, 0), mar = c(3.1, 1.5, 2.1, 2.1))
 alpha <- seq(1.5,2.9,0.1)
 plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l", 
