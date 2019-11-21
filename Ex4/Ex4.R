@@ -70,6 +70,7 @@ maxLik(logLik=loglik,start=0.01)
 # estimate of ??. Justify your choice of the initial estimate and all the intermediate steps.
 
 NR      <- function(lambda0,eps){
+  # x      : observed sample
   # lambda0: initial estimate of lambda
   # eps    : is the stopping rule
   
@@ -100,11 +101,11 @@ t(NR(ml.graph,epsil))
 t(NR(epsil,epsil)) # TODO
 #              1            2            3            4            5           6    
 # iterates 1e-06 1.999999e-06 3.999996e-06 7.999983e-06 1.599993e-05 3.19997e-05 
-#                     7        8            9           10          11          12       
+#                    7        8            9           10          11          12       
 # iterates 6.399877e-05 0.0001279951 0.0002559802 0.0005119205 0.001023682 0.002046726 
 #                13        14         15         16         17        18        19       
 # iterates 0.004090907  0.00817164 0.01630269 0.03244383 0.06424785 0.1259866 0.2423252 
-#                20        21       22       23      24       25       26       27
+#               20        21       22       23      24       25       26       27
 # iterates 0.448957 0.7753956  1.185332 1.516637 1.63512 1.645099 1.645161 1.645161
 
 
@@ -115,9 +116,6 @@ t(NR(epsil,epsil)) # TODO
 loglik.b <- function(b){
   n*b-exp(b)*sum(x)
 }
-
-x<-seq(-10,10,0.1)
-plot(x, loglik.b(x))
 
 # score function
 s.b <- function(b){n-exp(b)*sum(x)}
@@ -146,6 +144,8 @@ NR <- function(lambda0,eps){
   result
 }
 
-t(NR(2,epsil))
+t(NR(20,epsil))
+t(NR(25,epsil))
+t(NR(5,epsil))
 
 # (c) Which approach, (a) or (b) is more sensitive to the initial values?
