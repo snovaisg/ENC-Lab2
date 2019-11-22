@@ -197,7 +197,9 @@ for(i in alpha){
 # observamos que o valor mais proximo de 0.676118 e dado por alpha=2.1
 mme.mean=2.1
 
-mme.exp = mean(x)/(1-mean(x))
+mme.E = mean(x)/(1-mean(x))
+
+epsil = 0.000001
 
 t(NR(0.6,epsil))
 
@@ -205,7 +207,7 @@ t(NR(mme.mean,epsil))
 #            1        2        3        4        5
 # iterates 2.1 2.226919 2.235053 2.235083 2.235083
 
-t(NR(mme.exp,epsil))
+t(NR(mme.E,epsil))
 #                 1        2       3        4        5
 # iterates 2.087544 2.225344 2.23504 2.235083 2.235083
 
