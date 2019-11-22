@@ -238,6 +238,7 @@ SF      <- function(alpha0,eps){
 }
 
 t(SF(0.6,epsil))
-t(SF(mme.exp,0.000001))
+t(SF(mme.E,0.000001))
 #            1        2        3        4        5
+
 # iterates 2.087544 2.225344 2.23504 2.235083 2.235083

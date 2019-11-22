@@ -92,8 +92,8 @@ NR      <- function(lambda0,eps){
   result
 }
 
-ml.graph = 2
-t(NR(ml.graph,epsil))
+mme.graph = 2
+t(NR(mme.graph,epsil))
 #          1        2      3        4        5        6
 # iterates 2 1.568626 1.6416 1.645153 1.645161 1.645161
 
@@ -108,11 +108,15 @@ t(NR(epsil,epsil)) # TODO
 #               20        21       22       23      24       25       26       27
 # iterates 0.448957 0.7753956  1.185332 1.516637 1.63512 1.645099 1.645161 1.645161
 
+mme.E = 1/mean(x)
+t(NR(mme.E, epsil))
 
 # (b) Consider the following reparametrization b = log(??) in the pdf above. Implement the 
 # Newton-Rapshon algorithm to approximate the ML estimate of ?? using this reparametrization
 
 # loglikelihood function
+#                 1        2
+# iterates 1.645161 1.645161
 loglik.b <- function(b){
   n*b-exp(b)*sum(x)
 }
