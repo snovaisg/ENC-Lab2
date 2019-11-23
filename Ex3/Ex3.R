@@ -11,14 +11,19 @@ x <- c(0.5409477, 0.8184872, 0.7848854, 0.9850439, 0.8963032, 0.6089008, 0.95496
        0.7521881)
 n <- length(x)
 
-# compute analytically alpha for max lik
+# compute alpha analytically for max lik
 analytically <- -n/sum(log(x))
 
-# likelihood and log-likelihood
+
+
+# (a) Derive the likelihood, log-likelihood and score functions.
+
+# likelihood 
 lik    <- function(alpha){
   alpha^n*prod(x)^(alpha-1)
 }
 
+# log-likelihood
 loglik <- function(alpha){
   n*log(alpha) + (alpha-1)*sum(log(x))
 } 
@@ -33,21 +38,22 @@ maxval <- lik(analytically); maxval #43.61213
 
 
 # (b) Display the likelihood, log-likelihood and score functions graphically
-# in order to locate the ML estimate of ??.
+# in order to locate the ML estimate of alpha.
+
 library(Cairo)
 CairoPDF("lik_loglik_score_Beta.pdf",width=9,height=5)
 par(mfrow=c(1,3), oma = c(2, 5, 2, 0), mar = c(3.1, 1.5, 2.1, 2.1))
 alpha <- seq(1.5,2.9,0.1)
+
 plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l", 
-     main = "Likelihood")
-box(lwd=2)
+     main = "Likelihood"); box(lwd=2)
+
 plot(alpha,loglik(alpha),ylab="log-likelihood",xlab=expression(alpha),lwd=2,type="l", 
-     main = "Loglikelihood")
-box(lwd=2)
+     main = "Loglikelihood"); box(lwd=2)
+
 plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l", 
-     main = "Score")
-abline(h=0,lty=3)
-box(lwd=2)
+     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+
 dev.off()
 
 # graphical maximum likelihood estimator
@@ -63,9 +69,9 @@ maxLik(logLik=loglik, start=mme.graphical)
 #Estimate(s): 2.235083 
 
 
-# (d) Derive the algorithms of bisection, Newton-Raphson and Fisher scoring that 
-# enable the approximation of the ML estimate of ??. Implement those in R and use the
-# sample above to estimate ??. Justify your choice of the initial estimates. 
+# (d) Algorithms of bisection, Newton-Raphson and Fisher scoring that 
+# enable the approximation of the ML estimate of alpha. Using the
+# sample above to estimate alpha. 
 
 # BISECTION
 # programming the bisection method, which needs only the score function
@@ -100,6 +106,7 @@ bisection <- function(a,b,eps){
   result
 }
 
+# stopping criteria
 epsil = 0.000001
 
 # graphical choice
@@ -117,7 +124,8 @@ t(bisection(a.init,b.init,epsil))
 
 
 # start at almost 0 and b random but bigger than our graphical estimation (using epsil)
-s(0.000001)*s(5) #  -55667382
+s(0.000001)*s(5) #  -55667382 < 0
+
 t(bisection(0.000001,5,epsil))
 #             1    2     3      4       5        6        7        8        9       10       11
 #iterates 2.505 1.2575 1.88125 2.193125 2.349062 2.271094 2.232109 2.251602 2.241855 2.236982
@@ -158,17 +166,18 @@ for (i in seq_along(tab)){
 #############
 
 
-##
+
 # NEWTON-RAPHSON
 # programming the NR method, which needs both the score and the score derivative functions
+
+# score derivative function
 s.prime <- function(alpha){
   -n/alpha^2
 }
 
 
 NR      <- function(alpha0,eps){
-  # x      : observed sample
-  # [alpha0: initial estimate of alpha
+  # alpha0: initial estimate of alpha
   # eps    : is the stopping rule
   
   # the NR method iterates until the stopping criterion is validated
@@ -189,16 +198,34 @@ NR      <- function(alpha0,eps){
 }
 
 
-# pesquisa de grelha pela estimativa dos momentos
+# iteratively searching for an approximation using the estimation of moments
 mean(x)
 # 0.676118
 
 alpha <- seq(1.5,2.9,0.1)
 k = 1
 for(i in alpha){
-  print(c(k,alpha[k], gamma(alpha[k]+1)/(gamma(alpha[k])*(alpha[k]+1))))
+  print(c(k,alpha[k],
+          (alpha[k]/(alpha[k]+1))))
   k= k+1
 }
+
+# 1.0            1.5     0.6
+# 2.0000000   1.6000000  0.6153846
+# 3.0000000   1.7000000  0.6296296
+# 4.0000000   1.8000000  0.6428571
+# 5.0000000   1.9000000  0.6551724
+# 6.0000000   2.0000000  0.6666667
+# 7.0000000   2.1000000  0.6774194
+# 8.0000      2.2000     0.6875
+# 9.0000000   2.3000000   0.6969697
+# 10.0000000  2.4000000  0.7058824
+# 11.0000000  2.5000000  0.7142857
+# 12.0000000  2.6000000  0.7222222
+# 13.0000000  2.7000000  0.7297297
+# 14.0000000  2.8000000  0.7368421
+# 15.0000000  2.9000000  0.7435897
+
 # observamos que o valor mais proximo de 0.676118 e dado por alpha=2.1
 mme.mean=2.1
 

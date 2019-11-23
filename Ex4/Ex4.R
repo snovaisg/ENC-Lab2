@@ -13,7 +13,7 @@ x <- c(0.58169466, 0.39766226, 0.91658956, 0.02177749, 0.03876619, 0.21827670, 0
 
 n <- length(x)
 
-# compute analytically alpha for max lik
+# compute alpha analytically for max lik
 analytically <- n/sum(x); analytically # 1.645161
 
 epsil = 0.000001 # relative convergence criterion as a stop rule 
