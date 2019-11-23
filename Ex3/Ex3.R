@@ -226,7 +226,7 @@ for(i in alpha){
 # 14.0000000  2.8000000  0.7368421
 # 15.0000000  2.9000000  0.7435897
 
-# observamos que o valor mais proximo de 0.676118 e dado por alpha=2.1
+# we see that the value closest to the mean 0.676118 is achieved by alpha=2.1
 mme.mean=2.1
 
 mme.E = mean(x)/(1-mean(x))
@@ -234,6 +234,10 @@ mme.E = mean(x)/(1-mean(x))
 epsil = 0.000001
 
 t(NR(0.6,epsil))
+
+t(NR(mme.graphical,epsil))
+#            1        2        3        4
+# iterates 2.2 2.234532 2.235083 2.235083
 
 t(NR(mme.mean,epsil))
 #            1        2        3        4        5

@@ -74,7 +74,7 @@ for(i in lambda){
   k= k+1
 }
 
-#1 1 1
+# 1           1          1
 # 2.0000000   1.1000000  0.9090909
 # 3.0000000   1.2000000  0.8333333
 # 4.0000000   1.3000000  0.7692308
@@ -90,14 +90,17 @@ for(i in lambda){
 # 14.0000000  2.3000000  0.4347826
 # 15.0000000  2.4000000  0.4166667
 
+# we see that the value closest to the mean 0.676118 is achieved by lambda = 1.7
+mme.mean=1.7
+
 # using the maxlik() function to determine a ML estimator
 library(maxLik)
-maxLik(logLik=loglik,start=0.01)
+maxLik(logLik=loglik,start=mme.mean)
 # Maximum Likelihood estimation
-# Newton-Raphson maximisation, 12 iterations
+# Newton-Raphson maximisation, 3 iterations
 # Return code 1: gradient close to zero
 # Log-Likelihood: -12.55405 (1 free parameter(s))
-# Estimate(s): 1.645161 
+# Estimate(s): 1.645161
 
 
 
@@ -133,6 +136,11 @@ t(NR(mme.graph,epsil))
 # iterates 2 1.568626 1.6416 1.645153 1.645161 1.645161
 
 
+t(NR(mme.mean,epsil))
+#            1        2        3        4        5
+# iterates 1.7 1.643333 1.645159 1.645161 1.645161
+
+
 t(NR(epsil,epsil)) # TODO
 #              1            2            3            4            5           6    
 # iterates 1e-06 1.999999e-06 3.999996e-06 7.999983e-06 1.599993e-05 3.19997e-05 
@@ -145,6 +153,8 @@ t(NR(epsil,epsil)) # TODO
 
 mme.E = 1/mean(x)
 t(NR(mme.E, epsil))
+#                 1        2
+# iterates 1.645161 1.645161
 
 # (b) Consider the following reparametrization b = log(??) in the pdf above. Implement the 
 # Newton-Rapshon algorithm to approximate the ML estimate of ?? using this reparametrization
