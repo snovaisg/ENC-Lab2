@@ -269,8 +269,17 @@ SF      <- function(alpha0,eps){
   result
 }
 
-t(SF(0.6,epsil))
+# using graphical initial estimation for alpha
+t(SF(mme.graphical,epsil))
+#           1        2        3        4
+# iterates 2.2 2.234532 2.235083 2.235083
+
+# using the iterative approach of the mean
+t(SF(mme.mean,epsil))
+#            1        2        3        4        5
+# iterates 2.1 2.226919 2.235053 2.235083 2.235083
+
+# using the expected value
 t(SF(mme.E,0.000001))
 #            1        2        3        4        5
-
 # iterates 2.087544 2.225344 2.23504 2.235083 2.235083
