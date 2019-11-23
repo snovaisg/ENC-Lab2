@@ -61,6 +61,35 @@ box(lwd=2)
 # mtext(expression(paste("f(x;", lambda , ") =", lambda, "e^(",lambda,"x)")), outer = TRUE, cex = 1.5)
 dev.off()
 
+
+# iteratively searching for an approximation using the estimation of moments
+mean(x)
+# 0.6078434
+
+lambda <- seq(1,2.4,0.1)
+k = 1
+for(i in lambda){
+  print(c(k,lambda[k],
+          (1/(lambda[k]))))
+  k= k+1
+}
+
+#1 1 1
+# 2.0000000   1.1000000  0.9090909
+# 3.0000000   1.2000000  0.8333333
+# 4.0000000   1.3000000  0.7692308
+# 5.0000000   1.4000000  0.7142857
+# 6.0000000   1.5000000  0.6666667
+# 7.000       1.600      0.625
+# 8.0000000   1.7000000  0.5882353
+# 9.0000000   1.8000000  0.5555556
+# 10.0000000  1.9000000  0.5263158
+# 11.0        2.0        0.5
+# 12.0000000  2.1000000  0.4761905
+# 13.0000000  2.2000000  0.4545455
+# 14.0000000  2.3000000  0.4347826
+# 15.0000000  2.4000000  0.4166667
+
 # using the maxlik() function to determine a ML estimator
 library(maxLik)
 maxLik(logLik=loglik,start=0.01)
