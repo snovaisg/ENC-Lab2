@@ -11,6 +11,8 @@ x <- c(0.5409477, 0.8184872, 0.7848854, 0.9850439, 0.8963032, 0.6089008, 0.95496
        0.7521881)
 n <- length(x)
 
+# compute analytically alpha for max lik
+analytically <- -n/sum(log(x))
 
 # likelihood and log-likelihood
 lik    <- function(alpha){
@@ -25,6 +27,9 @@ loglik <- function(alpha){
 s <- function(alpha){
   n/alpha + sum(log(x))
 }
+
+# max value at:
+maxval <- lik(analytically); maxval #43.61213
 
 
 # (b) Display the likelihood, log-likelihood and score functions graphically
@@ -111,8 +116,8 @@ t(bisection(a.init,b.init,epsil))
 # iterates 2.235107 2.234985 2.235046 2.235077 2.235092 2.235085 2.235081 2.235083 2.235084
 
 
-# start at almost 0 and b random but bigger than our graphical estimation
-s(0.01)*s(5) # -5541.834
+# start at almost 0 and b random but bigger than our graphical estimation (using epsil)
+s(0.000001)*s(5) #  -55667382
 t(bisection(0.000001,5,epsil))
 #             1    2     3      4       5        6        7        8        9       10       11
 #iterates 2.505 1.2575 1.88125 2.193125 2.349062 2.271094 2.232109 2.251602 2.241855 2.236982
