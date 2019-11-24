@@ -173,12 +173,6 @@ s.b <- function(b){
 # derivative of the (pro???le) score function 
 s.b.prime <- function(b){-exp(b)*sum(x)}
 
-maxLik(logLik=loglik.b,start=2)
-# Maximum Likelihood estimation
-# Newton-Raphson maximisation, 5 iterations
-# Return code 1: gradient close to zero
-# Log-Likelihood: -12.55405 (1 free parameter(s))
-# Estimate(s): 0.497838
 
 # Compute back
 lambda.b.hat <- exp(0.497838); lambda.b.hat # 1.645161
@@ -197,6 +191,14 @@ plot(b,s.b(b),ylab="Score",xlab="b",lwd=2,type="l",
 # mtext(expression(paste("f(x;", lambda , ") =", lambda, "e^(",lambda,"x)")), outer = TRUE, cex = 1.5)
 dev.off()
 
+
+mme.graph.b = 1
+maxLik(logLik=loglik.b,start=mme.graph.b)
+# Maximum Likelihood estimation
+# Newton-Raphson maximisation, 4 iterations
+# Return code 1: gradient close to zero
+# Log-Likelihood: -12.55405 (1 free parameter(s))
+# Estimate(s): 0.497838 
 
 NR <- function(lambda0,eps){ 
   # x : observed sample 
