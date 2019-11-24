@@ -217,8 +217,24 @@ NR <- function(lambda0,eps){
   result
 }
 
-t(NR(20,epsil))
-t(NR(25,epsil))
-t(NR(5,epsil))
+# using graphical estimation
+t(NR(mme.graph,epsil))
+#                   1        2        3        4        5        6        7
+# b.it      0.6931472 1.094254 1.460681 1.624474 1.644900 1.645161 1.645161
+# lambda.it 2.0000000 2.986954 4.308895 5.075749 5.180494 5.181842 5.181842
+
+# using approximation of the mean
+t(NR(mme.mean,epsil))
+#                   1         2        3        4        5        6        7        8
+# b.it      0.5306283 0.8901083 1.298627 1.572167 1.641922 1.645154 1.645161 1.645161
+# lambda.it 1.7000000 2.4353933 3.664261 4.817077 5.165087 5.181809 5.181842 5.181842
+
+# using method of the moments
+t(NR(mme.E,epsil))
+#                  1         2        3        4        5        6        7        8
+# b.it      0.497838 0.8450265 1.256010 1.553110 1.640010 1.645144 1.645161 1.645161
+# lambda.it 1.645161 2.3280394 3.511384 4.726146 5.155222 5.181758 5.181842 5.181842
+
+
 
 # (c) Which approach, (a) or (b) is more sensitive to the initial values?
