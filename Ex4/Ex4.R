@@ -130,18 +130,19 @@ NR      <- function(lambda0,eps){
   result
 }
 
+# Newton Raphson with graphical estimation
 mme.graph = 2
 t(NR(mme.graph,epsil))
 #          1        2      3        4        5        6
 # iterates 2 1.568626 1.6416 1.645153 1.645161 1.645161
 
-
+# # Newton Raphson with approximation of the mean
 t(NR(mme.mean,epsil))
 #            1        2        3        4        5
 # iterates 1.7 1.643333 1.645159 1.645161 1.645161
 
-
-t(NR(epsil,epsil)) # TODO
+# # Newton Raphson starting at almost 0 (epsilon = 0.000001)
+t(NR(epsil,epsil)) 
 #              1            2            3            4            5           6    
 # iterates 1e-06 1.999999e-06 3.999996e-06 7.999983e-06 1.599993e-05 3.19997e-05 
 #                    7        8            9           10          11          12       
