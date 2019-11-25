@@ -207,8 +207,6 @@ plot(b,loglik.b(b),ylab="loglikelihood",xlab="b",lwd=2,type="l",
 
 plot(b,s.b(b),ylab="Score",xlab="b",lwd=2,type="l", 
      main = "Score"); abline(h=0,lty=3); box(lwd=2)
-
-# mtext(expression(paste("f(x;", lambda , ") =", lambda, "e^(",lambda,"x)")), outer = TRUE, cex = 1.5)
 dev.off()
 
 
@@ -225,10 +223,20 @@ install.packages("autoimage")
 library(autoimage)
 reset.par() # reset parameters to default
 
-CairoPDF("score_exp_reparam.pdf",width=9,height=5)
-lambda <- seq(1.5,10,0.1)
-plot(lambda,s.b(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
-     main = "Reparametrized Score"); abline(h=0,lty=3); box(lwd=2)
+# example using alpha = 5
+slope <- s.b.prime(log(epsil)) # slope of tangent in x0 = 5 of score function
+p.epsil <- s.b(log(epsil)) # point of score function
+inter <- p.epsil - slope*log(epsil) # intercept of tangent
+y0 <- (-inter/slope) # cut of y-axis
+
+CairoPDF("score_exp_reparam_tangent.pdf",width=9,height=5)
+b <- seq(-15,2,0.1)
+plot(b,s.b(b),ylab="score",xlab=expression(b),lwd=2,type="l", 
+     main = "Score tangent at lambda = epsilon"); abline(h=0,lty=3); box(lwd=2)
+abline(h=0, v = 0, a = inter, b = slope,lty=c(1,3, 3),
+       col=c("red","black", "black"))
+box(lwd=2)
+points(c(log(epsil), y0), c(p.epsil, 0), pch = 19, col = "red")
 dev.off()
 
 NR <- function(lambda0,eps){ 
@@ -243,7 +251,7 @@ NR <- function(lambda0,eps){
   while(!broke && diff>eps){ # to see whether method deverges
     b.it[k+1] = b.it[k]-s(b.it[k])/s.prime(b.it[k]) 
     lambda.it[k+1] = exp(b.it[k+1]) 
-    if (b.it[k+1] > 0){
+    if (lambda.it[k+1] > 0){
       diff = abs(b.it[k+1]-b.it[k])/abs(b.it[k])
     }else{
       broke = TRUE
@@ -276,9 +284,9 @@ t(NR(mme.E,epsil))
 
 # using epsil
 t(NR(epsil,epsil))
-#                    1             2
-# b.it      -13.815511 -1.436491e+02
-# lambda.it   0.000001  4.111487e-63
+#                   1             2         3
+# b.it      -13.815511 -1.436491e+02 -12830.18
+# lambda.it   0.000001  4.111487e-63      0.00
 
 # using 20
 t(NR(20,epsil))
@@ -292,4 +300,44 @@ t(NR(5,epsil))
 # b.it      1.609438 1.644385 1.64516 1.645161
 # lambda.it 5.000000 5.177824 5.18184 5.181842
 
-# (c) Which approach, (a) or (b) is more sensitive to the initial values?
+
+## CrasherPlots
+library(Cairo)
+install.packages("autoimage")
+library(autoimage)
+reset.par() # reset parameters to default
+
+
+
+# example using lambda = 5
+slope <- s.prime(5) # slope of tangent in x0 = 5 of score function
+p5 <- s(5) # point of score function
+inter <- p5 - slope*5 # intercept of tangent
+y0 <- (-inter/slope) # cut of y-axis
+
+CairoPDF("score_exp_tangent.pdf",width=9,height=5)
+lambda <- seq(-8,10,0.1)
+plot(lambda,s(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Score tangent at lambda = 5", ylim = c(-40,40)); abline(h=0,lty=3); box(lwd=2)
+abline(h=0, v = 0, a = inter, b = slope,lty=c(1,3, 3),
+       col=c("red","black", "black"))
+box(lwd=2)
+points(c(5, y0), c(p5, 0), pch = 19, col = "red")
+dev.off()
+
+
+# Reparamtrization: example using epsilon
+slope <- s.b.prime(log(epsil)) # slope of tangent in x0 = 5 of score function
+p.epsil <- s.b(log(epsil)) # point of score function
+inter <- p.epsil - slope*log(epsil) # intercept of tangent
+y0 <- (-inter/slope) # cut of y-axis
+
+CairoPDF("score_exp_reparam_tangent.pdf",width=9,height=5)
+b <- seq(-15,2,0.1)
+plot(b,s.b(b),ylab="score",xlab=expression(b),lwd=2,type="l", 
+     main = "Score tangent at lambda = epsilon"); abline(h=0,lty=3); box(lwd=2)
+abline(h=0, v = 0, a = inter, b = slope,lty=c(1,3, 3),
+       col=c("red","black", "black"))
+box(lwd=2)
+points(c(log(epsil), y0), c(p.epsil, 0), pch = 19, col = "red")
+dev.off()

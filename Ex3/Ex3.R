@@ -256,6 +256,11 @@ t(NR(epsil,epsil))
 # iterates 1e-06 2e-06
 
 
+# starting with very small value, almost 0 -> using epsilon
+# other stopping critreria!!
+t(NR(epsil,epsil^10))
+# needs 29 steps
+
 # starting with bigger value than calculated estimations, randomly 5
 t(NR(5,epsil))
 #         1         2
