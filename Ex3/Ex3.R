@@ -44,7 +44,6 @@ library(Cairo)
 CairoPDF("lik_loglik_score_Beta.pdf",width=9,height=5)
 par(mfrow=c(1,3), oma = c(2, 5, 2, 0), mar = c(3.1, 1.5, 2.1, 2.1))
 alpha <- seq(1.5,2.9,0.1)
-
 plot(alpha,lik(alpha),ylab="likelihood",xlab=expression(alpha),lwd=2,type="l", 
      main = "Likelihood"); box(lwd=2)
 
@@ -143,29 +142,6 @@ t(bisection(2.23508,2.23509,epsil))
 
 
 
-###### TODO
-rand.b <- runif(2,epsil,5)
-rand.b <- c(rand.b,100)
-rand.b
-tab <- vector()
-for (i in seq_along(rand.b)){
-  if (s(epsil)*s(i) <= 0){
-    tab <- c(tab, c(t(bisection(epsil,i,epsil))))
-  }
-}
-tab
-
-
-tab <- numeric(length(rand.b))
-df <- list()
-for (i in seq_along(tab)){
-  df[[i]] <- data.frame(
-    b <- i,
-    myT <- t(bisection(epsil,i,epsil)))
-    }  
-#############
-
-
 
 # NEWTON-RAPHSON
 # programming the NR method, which needs both the score and the score derivative functions
@@ -186,9 +162,14 @@ NR      <- function(alpha0,eps){
   alpha.it[1] = alpha0
   k           = 1
   diff        = 1
-  while(diff>eps){
+  broke = FALSE
+  while(!broke && diff>eps){ # to see whether method deverges
     alpha.it[k+1] = alpha.it[k]-s(alpha.it[k])/s.prime(alpha.it[k])
-    diff          = abs(alpha.it[k+1]-alpha.it[k])
+    if (alpha.it[k+1] > 0){
+      diff          = abs(alpha.it[k+1]-alpha.it[k])
+    }else{
+      broke = TRUE
+    }
     k             = k+1
   }
   result = as.matrix(alpha.it)
@@ -233,7 +214,6 @@ mme.E = mean(x)/(1-mean(x))
 
 epsil = 0.000001
 
-t(NR(0.6,epsil))
 
 t(NR(mme.graphical,epsil))
 #            1        2        3        4
@@ -247,7 +227,16 @@ t(NR(mme.E,epsil))
 #                 1        2       3        4        5
 # iterates 2.087544 2.225344 2.23504 2.235083 2.235083
 
+# starting with very small value, almost 0 -> using epsilon
+t(NR(epsil,epsil))
+#              1     2
+# iterates 1e-06 2e-06
 
+
+# starting with bigger value than calculated estimations, randomly 5
+t(NR(5,epsil))
+#         1         2
+# iterates 5 -1.185267
 
 # FISHER SCORING
 # programming the NR method, which needs both the score and the fisher information functions    
@@ -262,9 +251,14 @@ SF      <- function(alpha0,eps){
   alpha.it[1] = alpha0
   k           = 1
   diff        = 1
-  while(diff>eps){
+  broke = FALSE
+  while(!broke && diff>eps){
     alpha.it[k+1] = alpha.it[k]+s(alpha.it[k])/I(alpha.it[k])
+    if (alpha.it[k+1] > 0){
     diff          = abs(alpha.it[k+1]-alpha.it[k])
+    }else{
+      broke = TRUE
+    }
     k             = k+1
   }
   result = as.matrix(alpha.it)
@@ -284,6 +278,17 @@ t(SF(mme.mean,epsil))
 # iterates 2.1 2.226919 2.235053 2.235083 2.235083
 
 # using the expected value
-t(SF(mme.E,0.000001))
+t(SF(mme.E,epsil))
 #            1        2        3        4        5
 # iterates 2.087544 2.225344 2.23504 2.235083 2.235083
+
+
+# using the expected value
+t(SF(epsil,epsil))
+#              1     2
+# iterates 1e-06 2e-06
+
+# # using the expected value
+t(SF(5,epsil))
+#              1     2
+# iterates 5 -1.185267
