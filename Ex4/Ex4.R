@@ -119,9 +119,14 @@ NR      <- function(lambda0,eps){
   lambda.it[1] = lambda0
   k           = 1
   diff        = 1
-  while(diff>eps){
+  broke = FALSE
+  while(!broke && diff>eps){ # to see whether method deverges
     lambda.it[k+1] = lambda.it[k]-s(lambda.it[k])/s.prime(lambda.it[k])
-    diff          = abs(lambda.it[k+1]-lambda.it[k])/abs(lambda.it[k])
+    if (lambda.it[k+1] > 0){
+      diff          = abs(lambda.it[k+1]-lambda.it[k])/abs(lambda.it[k])
+    }else{
+      broke = TRUE
+    }
     k             = k+1
   }
   result = as.matrix(lambda.it)
@@ -141,6 +146,12 @@ t(NR(mme.mean,epsil))
 #            1        2        3        4        5
 # iterates 1.7 1.643333 1.645159 1.645161 1.645161
 
+
+mme.E = 1/mean(x)
+t(NR(mme.E, epsil))
+#                 1        2
+# iterates 1.645161 1.645161
+
 # # Newton Raphson starting at almost 0 (epsilon = 0.000001)
 t(NR(epsil,epsil)) 
 #              1            2            3            4            5           6    
@@ -152,10 +163,12 @@ t(NR(epsil,epsil))
 #               20        21       22       23      24       25       26       27
 # iterates 0.448957 0.7753956  1.185332 1.516637 1.63512 1.645099 1.645161 1.645161
 
-mme.E = 1/mean(x)
-t(NR(mme.E, epsil))
-#                 1        2
-# iterates 1.645161 1.645161
+
+# Newton Raphson starting at almost 0 (epsilon = 0.000001)
+t(NR(5,epsil))
+#          1         2
+# iterates 5 -5.196085
+
 
 # (b) Consider the following reparametrization b = log(??) in the pdf above. Implement the 
 # Newton-Rapshon algorithm to approximate the ML estimate of ?? using this reparametrization
@@ -200,6 +213,17 @@ maxLik(logLik=loglik.b,start=mme.graph.b)
 # Log-Likelihood: -12.55405 (1 free parameter(s))
 # Estimate(s): 0.497838 
 
+library(Cairo)
+install.packages("autoimage")
+library(autoimage)
+reset.par() # reset parameters to default
+
+CairoPDF("score_exp_reparam.pdf",width=9,height=5)
+lambda <- seq(1.5,10,0.1)
+plot(lambda,s.b(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+dev.off()
+
 NR <- function(lambda0,eps){ 
   # x : observed sample 
   # lambda0 : initial estimate of lambda
@@ -208,10 +232,15 @@ NR <- function(lambda0,eps){
   b.it = vector(); b.it[1] = b0
   lambda.it = vector(); lambda.it[1] = lambda0 
   k = 1; diff = 1 
-  while(diff>eps){ 
+  broke = FALSE
+  while(!broke && diff>eps){ # to see whether method deverges
     b.it[k+1] = b.it[k]-s(b.it[k])/s.prime(b.it[k]) 
     lambda.it[k+1] = exp(b.it[k+1]) 
-    diff = abs(b.it[k+1]-b.it[k])/abs(b.it[k])
+    if (b.it[k+1] > 0){
+      diff = abs(b.it[k+1]-b.it[k])/abs(b.it[k])
+    }else{
+      broke = TRUE
+    }
     k = k+1 
     } 
   result = as.matrix(cbind(b.it,lambda.it)) 
@@ -238,5 +267,16 @@ t(NR(mme.E,epsil))
 # lambda.it 1.645161 2.3280394 3.511384 4.726146 5.155222 5.181758 5.181842 5.181842
 
 
+# using epsil
+t(NR(epsil,epsil))
+#                    1             2
+# b.it      -13.815511 -1.436491e+02
+# lambda.it   0.000001  4.111487e-63
+
+# using 20
+t(NR(20,epsil))
+#                   1         2         3        4        5        6        7        8        9
+# b.it       2.995732 0.5364276 0.8979454 1.305783 1.575151 1.642181 1.645155 1.645161 1.645161
+# lambda.it 20.000000 1.7098875 2.4545549 3.690578 4.831471 5.166427 5.181814 5.181842 5.181842
 
 # (c) Which approach, (a) or (b) is more sensitive to the initial values?
