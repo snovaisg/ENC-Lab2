@@ -170,6 +170,13 @@ t(NR(5,epsil))
 # iterates 5 -5.196085
 
 
+CairoPDF("score_exp.pdf",width=9,height=5)
+lambda <- seq(1.5,10,0.1)
+plot(lambda,s(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
+     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+dev.off()
+
+
 # (b) Consider the following reparametrization b = log(??) in the pdf above. Implement the 
 # Newton-Rapshon algorithm to approximate the ML estimate of ?? using this reparametrization
 
@@ -221,7 +228,7 @@ reset.par() # reset parameters to default
 CairoPDF("score_exp_reparam.pdf",width=9,height=5)
 lambda <- seq(1.5,10,0.1)
 plot(lambda,s.b(lambda),ylab="score",xlab=expression(lambda),lwd=2,type="l", 
-     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+     main = "Reparametrized Score"); abline(h=0,lty=3); box(lwd=2)
 dev.off()
 
 NR <- function(lambda0,eps){ 
@@ -278,5 +285,11 @@ t(NR(20,epsil))
 #                   1         2         3        4        5        6        7        8        9
 # b.it       2.995732 0.5364276 0.8979454 1.305783 1.575151 1.642181 1.645155 1.645161 1.645161
 # lambda.it 20.000000 1.7098875 2.4545549 3.690578 4.831471 5.166427 5.181814 5.181842 5.181842
+
+# using 20
+t(NR(5,epsil))
+#                  1        2       3        4
+# b.it      1.609438 1.644385 1.64516 1.645161
+# lambda.it 5.000000 5.177824 5.18184 5.181842
 
 # (c) Which approach, (a) or (b) is more sensitive to the initial values?

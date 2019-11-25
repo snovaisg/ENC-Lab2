@@ -157,10 +157,21 @@ install.packages("autoimage")
 library(autoimage)
 reset.par() # reset parameters to default
 
-CairoPDF("score_Beta.pdf",width=9,height=5)
-alpha <- seq(1.5,50,0.1)
-plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l", 
-     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+# example using alpha = 5
+slope <- s.prime(5) # slope of tangent in x0 = 5 of score function
+p5 <- s(5) # point of score function
+inter <- p5 - slope*5 # intercept of tangent
+y0 <- (-inter/slope) # cut of y-axis
+
+CairoPDF("score_Beta5tangent.pdf",width=9,height=5)
+alpha <- seq(-2,10,0.1)
+plot(alpha,s(alpha),ylab=expression("score"),
+     xlab=expression(alpha),lwd=2,type="l", ylim = c(-30,30), 
+     main = "Score tangent at alpha =5") 
+abline(h=0, v = 0, a = inter, b = slope,lty=c(1,3, 3),
+                             col=c("red","black", "black"))
+box(lwd=2)
+points(c(5, y0), c(p5, 0), pch = 19, col = "red")
 dev.off()
 
 
@@ -267,7 +278,7 @@ SF      <- function(alpha0,eps){
   while(!broke && diff>eps){
     alpha.it[k+1] = alpha.it[k]+s(alpha.it[k])/I(alpha.it[k])
     if (alpha.it[k+1] > 0){
-    diff          = abs(alpha.it[k+1]-alpha.it[k])
+      diff          = abs(alpha.it[k+1]-alpha.it[k])
     }else{
       broke = TRUE
     }
@@ -304,3 +315,4 @@ t(SF(epsil,epsil))
 t(SF(5,epsil))
 #              1     2
 # iterates 5 -1.185267
+
