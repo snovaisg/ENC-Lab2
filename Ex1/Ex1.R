@@ -99,6 +99,7 @@ d = quantile(deltastar, c(.025,.975));
 ci = P - c(d[2],d[1])*sd(bootPvector); ci
 
 
+
 ####################################
 ############ Plots #################
 ####################################
@@ -106,3 +107,29 @@ png(filename="media/histogram_boot_ps.png")
 hist(bootPvector,main='Histogram of boostrap estimated p\'s')
 dev.off()
 
+
+#############################################
+############ Hypothesis testing #############
+#############################################
+
+set.seed(123)
+B=10000;
+alpha = 0.05
+n = length(A); n
+mu0 = 1000;
+sd0 = sd(A);
+t.obs = (rowMeans(A)-mu0)/sd0
+t.npb=numeric(B)
+z=A-rowMeans(A)+mu0
+
+for(i in 1:B){
+  x.npb=sample(z,n,replace=T)
+  sd.npb = sd(x.npb)
+  t.npb[i]=(rowMeans(x.npb)-mu0)/sd.npb
+}
+# left tailed test
+p.value <- sum(t.npb>=t.obs)/B
+p.value
+ifelse(p.value < alpha,'Reject H0', "Don't reject H0")
+# 0.0053
+# since p.value is < 0.05 we have evidence to reject H0 at the 5% level
