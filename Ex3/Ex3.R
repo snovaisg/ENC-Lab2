@@ -151,6 +151,22 @@ s.prime <- function(alpha){
   -n/alpha^2
 }
 
+# reset for par
+resetPar <- function() {
+  dev.new()
+  op <- par(no.readonly = TRUE)
+  dev.off()
+  op
+}
+
+library(Cairo)
+resetPar()
+CairoPDF("score_Beta.pdf",width=9,height=5)
+alpha <- seq(1.5,50,0.1)
+plot(alpha,s(alpha),ylab="score",xlab=expression(alpha),lwd=2,type="l", 
+     main = "Score"); abline(h=0,lty=3); box(lwd=2)
+dev.off()
+
 
 NR      <- function(alpha0,eps){
   # alpha0: initial estimate of alpha
