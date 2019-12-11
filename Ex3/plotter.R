@@ -2,6 +2,9 @@
 rm(list=ls())
 
 library(rstudioapi) # to automatically set the working directory to this file's path.
+#install.packages("plotly")
+library(plotly)
+packageVersion('plotly')
 
 #set the working directory to this file's path
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -50,6 +53,82 @@ library(Cairo)
 install.packages("autoimage")
 library(autoimage)
 reset.par() # reset parameters to default
+
+bisection <- function(a,b,eps){
+  # x    : observed sample
+  # [a,b]: interval where s verifies Bolzano's theorem
+  # eps  : is the stopping rule
+  
+  # the bisection method iterates until the stopping criterion is validated
+  # we will use as stopping rule diff = |alpha_(t+1)-alpha_(t)| < eps
+  # alpha is initialized as the mid point of [a,b]
+  alpha.it    = vector()
+  alpha.it[1] = (a+b)/2
+  k           = 1
+  diff        = 1
+  while(diff>eps){
+    if(s(alpha.it[k])*s(a)<0){
+      b             = alpha.it[k]
+      alpha.it[k+1] = (a+b)/2
+    }
+    else{if(s(alpha.it[k])*s(a)>0){
+      a             = alpha.it[k]
+      alpha.it[k+1] = (a+b)/2
+    }else{alpha.it[k+1]=alpha.it[k]}
+    }
+    diff = abs(alpha.it[k+1]-alpha.it[k])
+    k = k+1
+  }
+  result = as.matrix(alpha.it)
+  colnames(result)<-"iterates"
+  rownames(result)<-1:length(alpha.it)
+  result
+}
+
+t(bisection(a.init,b.init,epsil))
+#             1     2      3       4        5        6        7        8        9       10
+# iterates 2.25 2.125 2.1875 2.21875 2.234375 2.242188 2.238281 2.236328 2.235352 2.234863
+#               11       12       13       14       15       16       17       18       19
+# iterates 2.235107 2.234985 2.235046 2.235077 2.235092 2.235085 2.235081 2.235083 2.235084
+
+cols = c("#FF0000", "#FF8000", "#00CC00", "#00FFFF", "#0080FF", "#0000FF", "#7F00FF",
+         "#FF33FF", "#CC0066", "#660033", "#330019", "#003366", "#006666", "#000000")
+bisec.plotter <- function(a.init,b.init){
+  bis <- bisection(a.init,b.init,epsil)
+  alpha <- seq(-18,10,0.1)
+  legend_text <- c()
+  plot(alpha,s(alpha),ylab=expression("score"),
+       xlab=expression(alpha),lwd=2,type="l", ylim = c(-40,40), 
+       main = expression("Tangents depending on initial value"))
+  abline(h=0, v = 0, lty=c(3, 3), col=c("black", "black"))
+  box(lwd=2)
+  
+  # adding tangentes in for loop
+  for (i in (1:length(bis))){
+    print(bis[i])
+    points(bis[i], 0, pch = 20, col = cols[i])
+    legend_text <- c(legend_text, i)
+    print(bis[i])
+    
+  }
+  legend('right', legend = legend_text, pch=20, col=1:length(bis), ncol=2)
+  
+}
+
+CairoPDF("B2_25.pdf",width=9,height=5)
+bisec.plotter(2,2.5)
+dev.off()
+
+CairoPDF("Bepsil5.pdf",width=9,height=5)
+bisec.plotter(epsil,5)
+dev.off()
+
+CairoPDF("B_30.pdf",width=9,height=5)
+bisec.plotter(-30,30)
+dev.off()
+
+
+
 
 
 # FISHER SCORING
@@ -137,7 +216,6 @@ newton.plotter <- function(init){
     y0 <- (-inter/slope) # cut of y-axis
     abline(a = inter, b = slope,lty=1, col=cols[i])
     points(c(ralph[i], y0), c(p.i, 0), pch = 19, col = cols[i])
-    print(y0)
   }
   
 }
@@ -154,4 +232,8 @@ dev.off()
 CairoPDF("NR05.pdf",width=9,height=5)
 newton.plotter(0.5)
 dev.off()
+
+
+manipulate(newton.plotter(alpha), alpha = slider(epsil, 7, step = 0.05))
+
 
